@@ -1,16 +1,11 @@
-from flask import Flask
-from flask_jwt_extended import JWTManager
-from routes.auth import auth
-from routes.users import users
-from config import SECRET_KEY
+from fastapi import FastAPI
+from app.routes import auth, users
 
-app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = SECRET_KEY
+app = FastAPI()
 
-jwt = JWTManager(app)
 
-app.register_blueprint(auth, url_prefix='/api/auth')
-app.register_blueprint(users, url_prefix='/api/users')
+app.include_router(users.router)
+app.include_router(posts.router)
+app.include_router(comments.router)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+app.url_map.strict_slashes = False
