@@ -4,7 +4,7 @@ import datetime
 
 # Connect to MongoDB
 client = MongoClient('mongodb://localhost:27017/')
-db = client['sirbook']
+db = client['sirBook']
 
 # Define Users collection schema
 users_collection = db['users']
@@ -16,41 +16,20 @@ posts_collection = db['posts']
 # Define Comments collection schema
 comments_collection = db['comments']
 
-# Insert Sample Data
-def insert_sample_data():
-    user_id = str(ObjectId())
-    post_id = str(ObjectId())
-    comment_id = str(ObjectId())
+#sample users
+user1 = {
+    "email": "try_email",
+    "hashed_password": "try_password",
+    "firstname": "try_firstname",
+    "lastname": "try_lastname",
+    "gender": "try_gender",
+    "dateOfBirth": "try_dateOfBirth",
+    "phoneNumber": "try_phoneNumber",
+    "created_at": datetime.datetime.now(),
+    "profile_picture_url": "try_profile_picture",
+}
 
-    users_collection.insert_one({
-        "usr_id": user_id,
-        "email": "user@example.com",
-        "password": "hashed_password",
-        "friends_ids": [],
-        "posts_ids": [post_id],
-        "followers_ids": [],
-        "following_ids": [],
-        "profile_photo": "http://example.com/profile.jpg",
-        "cover_photo": "http://example.com/cover.jpg",
-        "description": "This is a user bio."
-    })
 
-    posts_collection.insert_one({
-        "post_id": post_id,
-        "author_id": user_id,
-        "content": "This is a post content.",
-        "comments_ids": [comment_id],
-        "profiles_reacted_ids": [],
-        "timestamp": datetime.datetime.now()
-    })
 
-    comments_collection.insert_one({
-        "comment_id": comment_id,
-        "post_id": post_id,
-        "author_id": user_id,
-        "content": "This is a comment content.",
-        "timestamp": datetime.datetime.now()
-    })
-
-insert_sample_data()
+inserted_user = users_collection.insert_one(user1)
 print("Collections and sample documents created successfully.")
