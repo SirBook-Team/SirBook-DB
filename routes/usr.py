@@ -70,31 +70,31 @@ async def create(entity_type: str, request: Request):
     return {"message": f"{entity_type[:-1].capitalize()} created successfully."}
 
 @router.put('/{entity_type}')
-async def update(entity_type: str, request: Request, query: str = None, value: str = None):
+async def update(entity_type: str, request: Request):
     if entity_type not in collections:
         raise HTTPException(status_code=404, detail="Entity type not found")
     collection = collections[entity_type]
+    parms = dict(request.query_params)
+    if not parms:
+        raise HTTPException(status_code=400, detail="Query parameters are required for update")
     entity = await request.json()
     model = get_model(entity_type)
     entity = model(**entity)
     entity_dict = entity.dict()
-    if query and value:
-        result = collection.update_many({query: value}, {"$set": entity_dict})
-    else:
-        raise HTTPException(status_code=400, detail="Query and value parameters are required for update")
+    result = collection.update_many(parms, {"$set": entity_dict})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Entity not found")
     return {"message": f"{entity_type[:-1].capitalize()} updated successfully."}
 
 @router.delete('/{entity_type}')
-async def delete(entity_type: str, query: str = None, value: str = None):
+async def delete(entity_type: str, request: Request):
     if entity_type not in collections:
         raise HTTPException(status_code=404, detail="Entity type not found")
     collection = collections[entity_type]
-    if query and value:
-        result = collection.delete_many({query: value})
-    else:
-        raise HTTPException(status_code=400, detail="Query and value parameters are required for delete")
+    parms = dict(request.query_params)
+    if not parms:
+        raise HTTPException(status_code=400, detail="Query parameters are required for delete")
+    result = collection.delete_many(parms)
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Entity not found")
     return {"message": f"{entity_type[:-1].capitalize()} deleted successfully."}
