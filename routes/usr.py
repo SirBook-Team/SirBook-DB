@@ -36,11 +36,14 @@ def get_model(entity_type: str):
     return models[entity_type]
 
 @router.get('/{entity_type}')
-async def find_all(entity_type: str):
+async def find_all(entity_type: str, query: str = None, value: str = None):
     if entity_type not in collections:
         raise HTTPException(status_code=404, detail="Entity type not found")
     collection = collections[entity_type]
-    entities = collection.find()
+    if query and value:
+        entities = collection.find({query: value})
+    else:
+        entities = collection.find()
     return entities_list[entity_type](entities)
 
 @router.get('/{entity_type}/{entity_id}')
@@ -63,24 +66,32 @@ async def create(entity_type: str, request: Request):
     collection.insert_one(entity_dict)
     return {"message": f"{entity_type[:-1].capitalize()} created successfully."}
 
-@router.put('/{entity_type}/{entity_id}')
-async def update(entity_type: str, entity_id: str, request: Request):
+@router.put('/{entity_type}')
+async def update(entity_type: str, request: Request, query: str = None, value: str = None):
     if entity_type not in collections:
         raise HTTPException(status_code=404, detail="Entity type not found")
     collection = collections[entity_type]
-    entity = collection.find_one({"_id": ObjectId(entity_id)})
-    if entity:
-        model = get_model(entity_type)
-        update_data = await request.json()
-        collection.update_one({"_id": ObjectId(entity_id)}, {"$set": update_data})
-        return {"message": f"{entity_type[:-1].capitalize()} updated successfully."}
-    raise HTTPException(status_code=404, detail="Entity not found")
+    entity = await request.json()
+    model = get_model(entity_type)
+    entity = model(**entity)
+    entity_dict = entity.dict()
+    if query and value:
+        result = collection.update_many({query: value}, {"$set": entity_dict})
+    else:
+        raise HTTPException(status_code=400, detail="Query and value parameters are required for update")
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Entity not found")
+    return {"message": f"{entity_type[:-1].capitalize()} updated successfully."}
 
-@router.delete('/{entity_type}/{entity_id}')
-async def delete(entity_type: str, entity_id: str):
+@router.delete('/{entity_type}')
+async def delete(entity_type: str, query: str = None, value: str = None):
     if entity_type not in collections:
         raise HTTPException(status_code=404, detail="Entity type not found")
     collection = collections[entity_type]
-    entity = collection.find_one({"_id": ObjectId(entity_id)})
-    if entity:
-        collection.delete_one({"_id": ObjectId(entity_id)})
+    if query and value:
+        result = collection.delete_many({query: value})
+    else:
+        raise HTTPException(status_code=400, detail="Query and value parameters are required for delete")
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Entity not found")
+    return {"message": f"{entity_type[:-1].capitalize()} deleted successfully."}
