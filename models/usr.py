@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class userData(BaseModel):
     email: str
-    hashed_password: str
+    hashedPassword: str
     firstname: str
     lastname: str
     gender: str

@@ -13,7 +13,7 @@ comments_collection = db['comments']
 # Sample user document
 user1 = {
     "email": "try_email",
-    "hashed_password": "try_password",
+    "hashedPassword": "try_password",
     "firstname": "try_firstname",
     "lastname": "try_lastname",
     "gender": "try_gender",
