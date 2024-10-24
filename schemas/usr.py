@@ -4,7 +4,7 @@ def userEntity(item) -> dict:
     return {
         "id": str(item["_id"]),
         "email": item["email"],
-        "hashedPassword": item["hashed_password"],
+        "hashedPassword": item["hashedPassword"],
         "firstname": item["firstname"],
         "lastname": item["lastname"],
         "gender": item["gender"],

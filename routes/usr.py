@@ -47,6 +47,7 @@ async def find_all(entity_type: str, request: Request):
     else:
         entities = collection.find()        
 
+    print(parms)
     return entities_list[entity_type](entities)
 
 @router.get('/{entity_type}/{entity_id}')
