@@ -36,14 +36,17 @@ def get_model(entity_type: str):
     return models[entity_type]
 
 @router.get('/{entity_type}')
-async def find_all(entity_type: str, query: str = None, value: str = None):
+async def find_all(entity_type: str, request: Request):
     if entity_type not in collections:
         raise HTTPException(status_code=404, detail="Entity type not found")
     collection = collections[entity_type]
-    if query and value:
-        entities = collection.find({query: value})
+
+    parms = dict(request.query_params)
+    if parms:
+        entities = collection.find(parms)
     else:
-        entities = collection.find()
+        entities = collection.find()        
+
     return entities_list[entity_type](entities)
 
 @router.get('/{entity_type}/{entity_id}')
