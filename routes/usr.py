@@ -62,3 +62,25 @@ async def create(entity_type: str, request: Request):
     entity_dict = entity.dict()
     collection.insert_one(entity_dict)
     return {"message": f"{entity_type[:-1].capitalize()} created successfully."}
+
+@router.put('/{entity_type}/{entity_id}')
+async def update(entity_type: str, entity_id: str, request: Request):
+    if entity_type not in collections:
+        raise HTTPException(status_code=404, detail="Entity type not found")
+    collection = collections[entity_type]
+    entity = collection.find_one({"_id": ObjectId(entity_id)})
+    if entity:
+        model = get_model(entity_type)
+        update_data = await request.json()
+        collection.update_one({"_id": ObjectId(entity_id)}, {"$set": update_data})
+        return {"message": f"{entity_type[:-1].capitalize()} updated successfully."}
+    raise HTTPException(status_code=404, detail="Entity not found")
+
+@router.delete('/{entity_type}/{entity_id}')
+async def delete(entity_type: str, entity_id: str):
+    if entity_type not in collections:
+        raise HTTPException(status_code=404, detail="Entity type not found")
+    collection = collections[entity_type]
+    entity = collection.find_one({"_id": ObjectId(entity_id)})
+    if entity:
+        collection.delete_one({"_id": ObjectId(entity_id)})
