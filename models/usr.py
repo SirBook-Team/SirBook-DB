@@ -16,6 +16,7 @@ class PostData(BaseModel):
     comments_ids: list
     profiles_reacted_ids: list
     timestamp: str
+    image: str
 
 class CommentData(BaseModel):
     post_id: str

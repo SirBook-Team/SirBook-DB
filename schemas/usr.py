@@ -21,7 +21,8 @@ def postEntity(item) -> dict:
         "content": item["content"],
         "comments_ids": item.get("comments_ids", []),
         "profiles_reacted_ids": item.get("profiles_reacted_ids", []),
-        "timestamp": item.get("timestamp", date.today().strftime("%Y-%m-%d"))
+        "timestamp": item.get("timestamp", date.today().strftime("%Y-%m-%d")),
+        "image": item.get("image", None)
     }
 
 def commentEntity(item) -> dict:
