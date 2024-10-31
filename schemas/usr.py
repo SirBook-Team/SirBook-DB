@@ -9,7 +9,8 @@ def userEntity(item) -> dict:
         "lastname": item["lastname"],
         "gender": item["gender"],
         "dateOfBirth": item["dateOfBirth"],
-        "phoneNumber": item["phoneNumber"]
+        "phoneNumber": item["phoneNumber"],
+        "profile": item["profile"]
     }
 
 def postEntity(item) -> dict:
