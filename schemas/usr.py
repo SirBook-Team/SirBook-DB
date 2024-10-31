@@ -10,7 +10,7 @@ def userEntity(item) -> dict:
         "gender": item["gender"],
         "dateOfBirth": item["dateOfBirth"],
         "phoneNumber": item["phoneNumber"],
-        "profile": item["profile"]
+        "profile": item.get("profile", None)
     }
 
 def postEntity(item) -> dict:
