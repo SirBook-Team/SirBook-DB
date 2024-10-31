@@ -1,4 +1,5 @@
 from models import *
+from datetime import date
 
 def userEntity(item) -> dict:
     return {
@@ -16,11 +17,11 @@ def userEntity(item) -> dict:
 def postEntity(item) -> dict:
     return {
         "id": str(item["_id"]),
-        "author_id": item["author_id"],
+        "owner": item["owner"],
         "content": item["content"],
-        "comments_ids": item["comments_ids"],
-        "profiles_reacted_ids": item["profiles_reacted_ids"],
-        "timestamp": item["timestamp"]
+        "comments_ids": item.get("comments_ids", []),
+        "profiles_reacted_ids": item.get("profiles_reacted_ids", []),
+        "timestamp": item.get("timestamp", date.today().strftime("%Y-%m-%d"))
     }
 
 def commentEntity(item) -> dict:
@@ -29,7 +30,7 @@ def commentEntity(item) -> dict:
         "post_id": item["post_id"],
         "author_id": item["author_id"],
         "content": item["content"],
-        "timestamp": item["timestamp"]
+        "timestamp": item.get("timestamp", date.today().strftime("%Y-%m-%d"))
     }
 
 

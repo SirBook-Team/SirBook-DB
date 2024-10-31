@@ -11,7 +11,7 @@ class userData(BaseModel):
     profile: str
 
 class PostData(BaseModel):
-    author_id: str
+    owner: str
     content: str
     comments_ids: list
     profiles_reacted_ids: list
