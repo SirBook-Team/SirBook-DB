@@ -87,6 +87,21 @@ async def update(entity_type: str, request: Request):
         raise HTTPException(status_code=404, detail="Entity not found")
     return {"message": f"{entity_type[:-1].capitalize()} updated successfully."}
 
+@router.put('/{entity_type}/{entity_id}')
+async def update_one(entity_type: str, entity_id: str, request: Request):
+    if entity_type not in collections:
+        raise HTTPException(status_code=404, detail="Entity type not found")
+    collection = collections[entity_type]
+    entity = await request.json()
+    model = get_model(entity_type)
+    entity = model(**entity)
+    print(entity)
+    entity_dict = entity.dict()
+    result = collection.update_one({"_id": ObjectId(entity_id)}, {"$set": entity_dict})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Entity not found")
+    return {"message": f"{entity_type[:-1].capitalize()} updated successfully."}
+
 @router.delete('/{entity_type}')
 async def delete(entity_type: str, request: Request):
     if entity_type not in collections:
@@ -96,6 +111,16 @@ async def delete(entity_type: str, request: Request):
     if not parms:
         raise HTTPException(status_code=400, detail="Query parameters are required for delete")
     result = collection.delete_many(parms)
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Entity not found")
+    return {"message": f"{entity_type[:-1].capitalize()} deleted successfully."}
+
+@router.delete('/{entity_type}/{entity_id}')
+async def delete_one(entity_type: str, entity_id: str):
+    if entity_type not in collections:
+        raise HTTPException(status_code=404, detail="Entity type not found")
+    collection = collections[entity_type]
+    result = collection.delete_one({"_id": ObjectId(entity_id)})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Entity not found")
     return {"message": f"{entity_type[:-1].capitalize()} deleted successfully."}

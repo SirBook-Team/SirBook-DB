@@ -8,6 +8,7 @@ class userData(BaseModel):
     gender: str
     dateOfBirth: str
     phoneNumber: str
+    profile: str
 
 class PostData(BaseModel):
     author_id: str
