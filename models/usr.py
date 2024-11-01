@@ -20,6 +20,6 @@ class PostData(BaseModel):
 
 class CommentData(BaseModel):
     post_id: str
-    author_id: str
+    owner: str
     content: str
     timestamp: str
