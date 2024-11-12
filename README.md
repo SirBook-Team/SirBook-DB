@@ -33,8 +33,16 @@ To get started with the project, clone the repository and install the necessary 
 git clone https://github.com/SirBook-Team/SirBook-DB
 cd sirbook-db
 pip install -r requirements.txt
-
+```
 
 ## Contributing
+We welcome contributions to improve the project. Please fork the repository and create a pull request with your changes.
 
-- We welcome contributions to improve the project. Please fork the repository and create a pull request with your changes.
+## Collaboration
+We encourage collaboration and are open to contributions from developers of all skill levels. If you have any ideas or suggestions, feel free to open an issue or contact us directly.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+## Additional Resources
+For more information, please refer to the documentation.
