@@ -29,7 +29,7 @@ def commentEntity(item) -> dict:
     return {
         "id": str(item["_id"]),
         "post_id": item["post_id"],
-        "author_id": item["author_id"],
+        "owner": item["owner"],
         "content": item["content"],
         "timestamp": item.get("timestamp", date.today().strftime("%Y-%m-%d"))
     }

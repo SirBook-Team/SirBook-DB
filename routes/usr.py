@@ -56,9 +56,10 @@ async def find_one(entity_type: str, entity_id: str):
         raise HTTPException(status_code=404, detail="Entity type not found")
     collection = collections[entity_type]
     entity = collection.find_one({"_id": ObjectId(entity_id)})
-    if entity:
-        return entities[entity_type](entity)
-    raise HTTPException(status_code=404, detail="Entity not found")
+    if entity is None:
+        raise HTTPException(status_code=404, detail="Entity not found")
+    print(entities[entity_type](entity))
+    return entities[entity_type](entity)
 
 @router.post('/{entity_type}')
 async def create(entity_type: str, request: Request):
@@ -68,7 +69,9 @@ async def create(entity_type: str, request: Request):
     collection = collections[entity_type]
     entity_dict = entity.dict()
     collection.insert_one(entity_dict)
-    return {"message": f"{entity_type[:-1].capitalize()} created successfully."}
+    print(entity)
+    # return created entity
+    return entity
 
 @router.put('/{entity_type}')
 async def update(entity_type: str, request: Request):
